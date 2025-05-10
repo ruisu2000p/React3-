@@ -337,7 +337,6 @@ const ImprovedXBRLTableExtractor: React.FC = () => {
                       });
                     } else if (xbrlTags.length > 0) {
                       xbrlTags.forEach(tag => {
-                        const tagName = tag.tagName.toLowerCase();
                         const contextRef = tag.getAttribute('contextref') || '';
                         const unitRef = tag.getAttribute('unitref') || '';
                         const value = tag.textContent?.trim() || '';
@@ -404,7 +403,6 @@ const ImprovedXBRLTableExtractor: React.FC = () => {
             
             const contextRef = el.getAttribute('contextref') || '';
             const unitRef = el.getAttribute('unitref') || '';
-            const decimals = el.getAttribute('decimals') || '';
             
             let period = '';
             if (contextRef.includes('CurrentYear')) {

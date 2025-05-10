@@ -2,7 +2,6 @@ import React, { useState, useCallback, useContext } from 'react';
 import { NotificationContext } from '../../contexts/NotificationContext';
 import { useTheme } from '../../contexts/ThemeContext';
 
-type ViewMode = 'hierarchical' | 'comparative' | 'graph';
 
 interface XBRLPeriod {
   type: 'instant' | 'duration';
