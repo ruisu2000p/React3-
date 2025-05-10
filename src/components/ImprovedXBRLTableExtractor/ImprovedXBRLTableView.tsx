@@ -421,9 +421,9 @@ const ImprovedXBRLTableView: React.FC<ImprovedXBRLTableViewProps> = ({ xbrlData 
        (!xbrlData.items || xbrlData.items.length === 0))) {
     return (
       <div className="empty-data-message p-4 text-center bg-gray-100 dark:bg-gray-800 rounded-md text-gray-800 dark:text-white">
-        <p>XBRLデータがありません</p>
-        <p className="text-sm mt-2">テーブルは抽出されましたが、XBRLタグが見つかりませんでした。</p>
-        <p className="text-sm">サンプルデータにcontextref属性を持つ要素があることを確認してください。</p>
+        <div>XBRLデータがありません</div>
+        <div className="text-sm mt-2">テーブルは抽出されましたが、XBRLタグが見つかりませんでした。</div>
+        <div className="text-sm">サンプルデータにcontextref属性を持つ要素があることを確認してください。</div>
       </div>
     );
   }
