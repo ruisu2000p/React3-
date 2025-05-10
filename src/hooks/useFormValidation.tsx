@@ -49,7 +49,7 @@ interface FormValidationReturn<T extends DefaultFormValues> {
   isValid: boolean;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   handleBlur: (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
-  handleSubmit: (e?: React.FormEvent) => Promise<void>;
+  handleSubmit: (e?: React.FormEvent) => Promise<void | boolean>;
   setValue: (name: string, value: any) => void;
   resetForm: () => void;
   validateField: (value: any, rules?: ValidationRule) => string | null;
@@ -67,7 +67,7 @@ interface FormValidationReturn<T extends DefaultFormValues> {
 const useFormValidation = <T extends DefaultFormValues>(
   initialValues: T = {} as T, 
   validationRules: ValidationRules = {}, 
-  onSubmit: (values: T) => Promise<void> | void = () => {}
+  onSubmit: (values: T) => Promise<void> | Promise<boolean> | void = () => {}
 ): FormValidationReturn<T> => {
   const [values, setValues] = useState<T>(initialValues);
   const [errors, setErrors] = useState<FormErrors>({});
