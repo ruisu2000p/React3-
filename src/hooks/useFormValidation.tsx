@@ -22,7 +22,7 @@ interface ValidationRule {
     value: RegExp;
     message?: string;
   };
-  validate?: (value: any, values: Record<string, any>) => boolean | string;
+  validate?: (value: any, values: any) => boolean | string;
 }
 
 interface ValidationRules {
