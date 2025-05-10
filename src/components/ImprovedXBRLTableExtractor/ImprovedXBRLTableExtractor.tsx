@@ -413,6 +413,9 @@ const ImprovedXBRLTableExtractor: React.FC = () => {
             } else if (contextRef.includes('PreviousYear')) {
               period = '前期';
               periods.add(period);
+            } else if (contextRef) {
+              period = contextRef;
+              periods.add(period);
             }
             
             taxonomyItems.push({
