@@ -264,99 +264,157 @@ const ImprovedXBRLTableExtractor: React.FC = () => {
     
     setTimeout(() => {
       try {
-        const sampleData: XBRLData = {
-          title: '財務諸表サンプル',
-          periods: ['2022年3月期', '2023年3月期'],
-          mainSections: [
-            {
-              title: '貸借対照表',
-              items: [
-                {
-                  name: '流動資産',
-                  value: '',
-                  children: [
-                    { name: '現金及び預金', value: '1,200,000', unit: '千円', period: '2023年3月期' },
-                    { name: '受取手形及び売掛金', value: '800,000', unit: '千円', period: '2023年3月期' },
-                    { name: 'その他', value: '300,000', unit: '千円', period: '2023年3月期' }
-                  ]
-                },
-                {
-                  name: '固定資産',
-                  value: '',
-                  children: [
-                    { name: '有形固定資産', value: '2,500,000', unit: '千円', period: '2023年3月期' },
-                    { name: '無形固定資産', value: '500,000', unit: '千円', period: '2023年3月期' },
-                    { name: '投資その他の資産', value: '700,000', unit: '千円', period: '2023年3月期' }
-                  ]
-                }
-              ],
-              subsections: [
-                {
-                  title: '資産の部',
-                  items: [
-                    { name: '資産合計', value: '6,000,000', unit: '千円', period: '2023年3月期' }
-                  ]
-                },
-                {
-                  title: '負債の部',
-                  items: [
-                    {
-                      name: '流動負債',
-                      value: '',
-                      children: [
-                        { name: '支払手形及び買掛金', value: '600,000', unit: '千円', period: '2023年3月期' },
-                        { name: '短期借入金', value: '400,000', unit: '千円', period: '2023年3月期' },
-                        { name: 'その他', value: '200,000', unit: '千円', period: '2023年3月期' }
-                      ]
-                    },
-                    {
-                      name: '固定負債',
-                      value: '',
-                      children: [
-                        { name: '長期借入金', value: '1,500,000', unit: '千円', period: '2023年3月期' },
-                        { name: '退職給付引当金', value: '300,000', unit: '千円', period: '2023年3月期' },
-                        { name: 'その他', value: '200,000', unit: '千円', period: '2023年3月期' }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              title: '損益計算書',
-              items: [
-                { name: '売上高', value: '5,000,000', unit: '千円', period: '2023年3月期' },
-                { name: '売上原価', value: '3,500,000', unit: '千円', period: '2023年3月期' },
-                { name: '売上総利益', value: '1,500,000', unit: '千円', period: '2023年3月期' },
-                { name: '販売費及び一般管理費', value: '1,000,000', unit: '千円', period: '2023年3月期' },
-                { name: '営業利益', value: '500,000', unit: '千円', period: '2023年3月期' },
-                { name: '経常利益', value: '480,000', unit: '千円', period: '2023年3月期' },
-                { name: '当期純利益', value: '320,000', unit: '千円', period: '2023年3月期' }
-              ]
-            }
-          ],
-          taxonomyItems: [
-            { name: '現金及び預金', value: '1,200,000', unit: '千円', period: '2023年3月期' },
-            { name: '受取手形及び売掛金', value: '800,000', unit: '千円', period: '2023年3月期' },
-            { name: '有形固定資産', value: '2,500,000', unit: '千円', period: '2023年3月期' },
-            { name: '無形固定資産', value: '500,000', unit: '千円', period: '2023年3月期' },
-            { name: '投資その他の資産', value: '700,000', unit: '千円', period: '2023年3月期' },
-            { name: '支払手形及び買掛金', value: '600,000', unit: '千円', period: '2023年3月期' },
-            { name: '短期借入金', value: '400,000', unit: '千円', period: '2023年3月期' },
-            { name: '長期借入金', value: '1,500,000', unit: '千円', period: '2023年3月期' },
-            { name: '退職給付引当金', value: '300,000', unit: '千円', period: '2023年3月期' },
-            { name: '売上高', value: '5,000,000', unit: '千円', period: '2023年3月期' },
-            { name: '売上原価', value: '3,500,000', unit: '千円', period: '2023年3月期' },
-            { name: '売上総利益', value: '1,500,000', unit: '千円', period: '2023年3月期' },
-            { name: '販売費及び一般管理費', value: '1,000,000', unit: '千円', period: '2023年3月期' },
-            { name: '営業利益', value: '500,000', unit: '千円', period: '2023年3月期' },
-            { name: '経常利益', value: '480,000', unit: '千円', period: '2023年3月期' },
-            { name: '当期純利益', value: '320,000', unit: '千円', period: '2023年3月期' }
-          ]
-        };
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, 'text/html');
         
-        setXbrlData(sampleData);
-        notification?.showSuccess('XBRLデータを抽出しました');
+        const xbrlElements = doc.querySelectorAll('[contextref]');
+        
+        if (xbrlElements.length === 0) {
+          const sampleData: XBRLData = {
+            title: '財務諸表サンプル',
+            periods: ['2022年3月期', '2023年3月期'],
+            mainSections: [
+              {
+                title: '貸借対照表',
+                items: [
+                  { name: '流動資産', value: '', children: [] },
+                  { name: '固定資産', value: '', children: [] }
+                ]
+              },
+              {
+                title: '損益計算書',
+                items: []
+              }
+            ],
+            taxonomyItems: []
+          };
+          
+          const tables = doc.querySelectorAll('table');
+          if (tables.length > 0) {
+            const tableData: XBRLItem[] = [];
+            const periods: string[] = [];
+            
+            tables.forEach(table => {
+              const rows = table.querySelectorAll('tr');
+              
+              const headerRow = rows[0];
+              if (headerRow) {
+                const headerCells = headerRow.querySelectorAll('th');
+                headerCells.forEach((cell, index) => {
+                  if (index > 0) { // 最初の列はラベル列
+                    const periodText = cell.textContent?.trim() || `期間${index}`;
+                    if (!periods.includes(periodText)) {
+                      periods.push(periodText);
+                    }
+                  }
+                });
+              }
+              
+              for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.querySelectorAll('td');
+                
+                if (cells.length > 0) {
+                  const itemName = cells[0].textContent?.trim() || '';
+                  
+                  for (let j = 1; j < cells.length && j <= periods.length; j++) {
+                    const cell = cells[j];
+                    const xbrlTags = cell.querySelectorAll('[contextref]');
+                    
+                    if (xbrlTags.length > 0) {
+                      xbrlTags.forEach(tag => {
+                        const tagName = tag.tagName.toLowerCase();
+                        const contextRef = tag.getAttribute('contextref') || '';
+                        const unitRef = tag.getAttribute('unitref') || '';
+                        const value = tag.textContent?.trim() || '';
+                        
+                        tableData.push({
+                          name: itemName,
+                          value: value,
+                          context: contextRef,
+                          unit: unitRef,
+                          period: periods[j-1]
+                        });
+                      });
+                    } else {
+                      const value = cell.textContent?.trim() || '';
+                      if (value) {
+                        tableData.push({
+                          name: itemName,
+                          value: value,
+                          period: periods[j-1]
+                        });
+                      }
+                    }
+                  }
+                }
+              }
+            });
+            
+            if (tableData.length > 0) {
+              sampleData.taxonomyItems = tableData;
+              sampleData.periods = periods.length > 0 ? periods : ['2023年3月期'];
+              
+              sampleData.mainSections[1].items = tableData.map(item => ({
+                name: item.name,
+                value: item.value,
+                unit: item.unit,
+                period: item.period
+              }));
+            }
+          }
+          
+          setXbrlData(sampleData);
+          notification?.showSuccess('テーブルデータを抽出しました');
+        } else {
+          const taxonomyItems: XBRLItem[] = [];
+          const periods = new Set<string>();
+          
+          xbrlElements.forEach(el => {
+            const name = el.tagName.toLowerCase();
+            const value = el.textContent?.trim() || '';
+            const contextRef = el.getAttribute('contextref') || '';
+            const unitRef = el.getAttribute('unitref') || '';
+            const decimals = el.getAttribute('decimals') || '';
+            
+            let period = '';
+            if (contextRef.includes('CurrentYear')) {
+              period = '当期';
+              periods.add(period);
+            } else if (contextRef.includes('PreviousYear')) {
+              period = '前期';
+              periods.add(period);
+            }
+            
+            taxonomyItems.push({
+              name,
+              value,
+              context: contextRef,
+              unit: unitRef,
+              period
+            });
+          });
+          
+          const xbrlData: XBRLData = {
+            title: 'XBRL財務データ',
+            periods: Array.from(periods),
+            mainSections: [
+              {
+                title: '財務情報',
+                items: taxonomyItems.map(item => ({
+                  name: item.name,
+                  value: item.value,
+                  unit: item.unit,
+                  period: item.period
+                }))
+              }
+            ],
+            taxonomyItems
+          };
+          
+          setXbrlData(xbrlData);
+          notification?.showSuccess(`${taxonomyItems.length}個のXBRLタグを抽出しました`);
+        }
       } catch (error) {
         if (error instanceof Error) {
           notification?.showError(`XBRLデータの抽出中にエラーが発生しました: ${error.message}`);
@@ -367,8 +425,8 @@ const ImprovedXBRLTableExtractor: React.FC = () => {
       } finally {
         setIsProcessing(false);
       }
-    }, 1500); // 処理時間をシミュレート
-  }, [notification]);
+    }, 500); // 処理時間を短縮
+  }, [htmlContent, notification]);
   
   const handleProcessing = () => {
     extractXBRLData();

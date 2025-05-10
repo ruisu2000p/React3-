@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '../../contexts/ThemeContext.js';
+import { useTheme } from '../../contexts/ThemeContext';
 
 interface XBRLItem {
   name: string;
