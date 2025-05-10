@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useNotification } from '../../contexts/NotificationContext';
+import { useNotification } from '../contexts/NotificationContext';
 
 /**
  * 改善版XBRLテーブル表示コンポーネント
