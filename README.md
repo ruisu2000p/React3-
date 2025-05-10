@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # HTML Table Extractor (統合版)
 
 HTML文書からテーブルを抽出し、様々な形式で表示・編集・エクスポートするための統合ツールです。XBRL対応の財務データ抽出機能も備えています。
@@ -130,3 +131,6 @@ npm start
 ## ライセンス
 
 MIT License
+=======
+# React3-app
+>>>>>>> c9eaad90aeaf3c4d92260878b8a56c44fe148c5c
