@@ -108,7 +108,7 @@ const ImprovedXBRLTableView = ({ data, isDarkMode }) => {
         console.error('グラフ描画エラー:', err);
       }
     }
-  }, [viewMode, processedData, selectedMainItems, chartType, isDarkMode, chartLoaded]);
+  }, [viewMode, processedData, selectedMainItems, chartType, isDarkMode, chartLoaded, drawChart]);
 
   // グラフ描画関数
   const drawChart = () => {
