@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react';
-import { NotificationContext } from '../../contexts/NotificationContext.js';
-import { useTheme } from '../../contexts/ThemeContext.js';
+import { NotificationContext } from '../../contexts/NotificationContext';
+import { useTheme } from '../../contexts/ThemeContext';
 
 type ViewMode = 'hierarchical' | 'comparative' | 'graph';
 
@@ -417,10 +417,14 @@ const ImprovedXBRLTableView: React.FC<ImprovedXBRLTableViewProps> = ({ xbrlData 
     );
   };
   
-  if (!xbrlData) {
+  if (!xbrlData || !xbrlData.hierarchicalData || 
+      (Object.keys(xbrlData.hierarchicalData).length === 0 && 
+       (!xbrlData.items || xbrlData.items.length === 0))) {
     return (
       <div className="empty-data-message p-4 text-center bg-gray-100 dark:bg-gray-800 rounded-md text-gray-800 dark:text-white">
         <p>XBRLデータがありません</p>
+        <p className="text-sm mt-2">テーブルは抽出されましたが、XBRLタグが見つかりませんでした。</p>
+        <p className="text-sm">サンプルデータにcontextref属性を持つ要素があることを確認してください。</p>
       </div>
     );
   }

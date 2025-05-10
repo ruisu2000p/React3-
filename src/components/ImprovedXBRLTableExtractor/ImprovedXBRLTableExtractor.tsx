@@ -267,9 +267,11 @@ const ImprovedXBRLTableExtractor: React.FC = () => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlContent, 'text/html');
         
-        const xbrlElements = doc.querySelectorAll('[contextref]');
+        const xbrlElements = Array.from(doc.querySelectorAll('[contextref]'));
+        const tdWithContextRef = Array.from(doc.querySelectorAll('td[contextref]'));
+        const allXbrlElements = [...xbrlElements, ...tdWithContextRef];
         
-        if (xbrlElements.length === 0) {
+        if (allXbrlElements.length === 0) {
           const sampleData: XBRLData = {
             title: '財務諸表サンプル',
             periods: ['2022年3月期', '2023年3月期'],
@@ -321,7 +323,19 @@ const ImprovedXBRLTableExtractor: React.FC = () => {
                     const cell = cells[j];
                     const xbrlTags = cell.querySelectorAll('[contextref]');
                     
-                    if (xbrlTags.length > 0) {
+                    if (cell.hasAttribute('contextref')) {
+                      const contextRef = cell.getAttribute('contextref') || '';
+                      const unitRef = cell.getAttribute('unitref') || '';
+                      const value = cell.textContent?.trim() || '';
+                      
+                      tableData.push({
+                        name: itemName,
+                        value: value,
+                        context: contextRef,
+                        unit: unitRef,
+                        period: periods[j-1]
+                      });
+                    } else if (xbrlTags.length > 0) {
                       xbrlTags.forEach(tag => {
                         const tagName = tag.tagName.toLowerCase();
                         const contextRef = tag.getAttribute('contextref') || '';
@@ -370,9 +384,24 @@ const ImprovedXBRLTableExtractor: React.FC = () => {
           const taxonomyItems: XBRLItem[] = [];
           const periods = new Set<string>();
           
-          xbrlElements.forEach(el => {
-            const name = el.tagName.toLowerCase();
-            const value = el.textContent?.trim() || '';
+          allXbrlElements.forEach(el => {
+            let name = '';
+            let value = '';
+            
+            if (el.tagName.toLowerCase() === 'td') {
+              const row = el.closest('tr');
+              if (row) {
+                const firstCell = row.querySelector('td');
+                if (firstCell) {
+                  name = firstCell.textContent?.trim() || '';
+                }
+              }
+              value = el.textContent?.trim() || '';
+            } else {
+              name = el.tagName.toLowerCase();
+              value = el.textContent?.trim() || '';
+            }
+            
             const contextRef = el.getAttribute('contextref') || '';
             const unitRef = el.getAttribute('unitref') || '';
             const decimals = el.getAttribute('decimals') || '';
